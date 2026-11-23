@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B193D" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="San Carlo Pro" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <title>San Carlo Enterprise — Giro Clienti, Fido & Recupero</title>
+  <style>
+    :root {
+      /* Material Design 3 Enterprise Dark Theme + San Carlo Brand Tokens */
+      --bg-canvas: #060D1E;
+      --surface-1: #0B1633;
+      --surface-2: #112149;
+      --surface-3: #182D61;
+      --surface-elevated: #1E3775;
+      --outline: #29458A;
+      --outline-variant: rgba(65, 105, 195, 0.25);
+
+      --on-surface: #F8FAFC;
+      --on-surface-variant: #9BB0DC;
+      --on-surface-muted: #6E85B7;
+
+      --sc-red: #D91E2A;
+      --sc-red-container: rgba(217, 30, 42, 0.16);
+      --sc-on-red-container: #FFB4AB;
+
+      --sc-gold: #F5B800;
+      --sc-gold-container: rgba(245, 184, 0, 0.15);
+
+      --emerald: #10B981;
+      --emerald-container: rgba(16, 185, 129, 0.16);
+
+      --violet: #C084FC;
+      --violet-container: rgba(192, 132, 252, 0.16);
+
+      --font-sans: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+      --shadow-1: 0 2px 6px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.5);
+      --shadow-2: 0 6px 18px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      background-color: var(--bg-canvas);
+      color: var(--on-surface);
+      font-family: var(--font-sans);
+      width: 100%;
+      overflow-x: hidden;
+      line-height: 1.4;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Enterprise AppBar */
+    .app-bar {
+      background: linear-gradient(180deg, #0E1D42 0%, #09132B 100%);
+      border-bottom: 1px solid var(--outline);
+      box-shadow: var(--shadow-1);
+    }
+    .app-bar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sc-emblem {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+    }
+    .brand-titles h1 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .env-chip {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--sc-gold-container);
+      color: var(--sc-gold);
+      border: 1px solid rgba(245, 184, 0, 0.4);
+    }
+    .brand-titles p {
+      font-size: 0.76rem;
+      color: var(--on-surface-variant);
+      margin-top: 2px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .m3-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .m3-btn:active { transform: scale(0.98); }
+    .m3-btn-tonal {
+      background: var(--surface-2);
+      color: var(--on-surface);
+      border-color: var(--outline);
+    }
+    .m3-btn-tonal:hover { background: var(--surface-3); }
+    .m3-btn-danger {
+      background: var(--sc-red-container);
+      color: var(--sc-on-red-container);
+      border-color: rgba(217, 30, 42, 0.45);
+    }
+    .m3-btn-primary {
+      background: var(--sc-red);
+      color: #FFFFFF;
+      border-color: #F43F5E;
+      box-shadow: 0 2px 8px rgba(217, 30, 42, 0.35);
+    }
+    .m3-btn-emerald {
+      background: var(--emerald);
+      color: #04130D;
+      font-weight: 800;
+    }
+
+    /* Main Workspace Container */
+    .workspace {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 16px 48px 16px;
+    }
+
+    /* Enterprise Telemetry Strip (4 Cards) */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 820px) {
+      .telemetry-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .telemetry-card {
+      background: var(--surface-1);
+      border: 1px solid var(--outline-variant);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow-1);
+      position: relative;
+      overflow: hidden;
+    }
+    .telemetry-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .tc-emerald::before { background: var(--emerald); }
+    .tc-gold::before { background: var(--sc-gold); }
+    .tc-violet::before { background: var(--violet); }
+    .tc-red::before { background: var(--sc-red); }
+
+    .tc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.69rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface-variant);
+    }
+    .tc-value {
+      font-size: 1.24rem;
+      font-weight: 800;
+      margin-top: 5px;
+      letter-spacing: -0.01em;
+    }
+    .tc-sub {
+      font-size: 0.72rem;
+      color: var(--on-surface-muted);
+      margin-top: 4px;
+    }
+    .linear-track {
+      height: 5px;
+      background: var(--surface-3);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 7px;
+    }
+    .linear-fill {
+      height: 100%;
+      transition: width 0.25s ease;
+    }
+
+    /* Master Progress Bar Card */
+    .master-progress {
+      background: var(--surface-1);
+      border: 1px solid var(--outline-variant);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-1);
+    }
+    .mp-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .mp-track {
+      height: 10px;
+      background: var(--surface-3);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .mp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sc-red) 0%, var(--sc-gold) 65%, var(--emerald) 100%);
+      transition: width 0.25s ease;
+    }
+
+    /* Material Design 3 Segmented Navigation Tabs (2 Independent Cards) */
+    .m3-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--surface-1);
+      border: 1px solid var(--outline);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-1);
+    }
+    .m3-tab {
+      height: 44px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.18s ease;
+    }
+    .m3-tab.active {
+      background: var(--sc-red);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(217, 30, 42, 0.45);
+    }
+    .tab-badge {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 99px;
+      background: rgba(0, 0, 0, 0.28);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+    }
+
+    /* Independent Views */
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+
+    /* Collapsible / Clean Extra Order Card */
+    .enterprise-card {
+      background: var(--surface-1);
+      border: 1px solid var(--outline-variant);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-1);
+    }
+    .ec-title {
+      font-size: 0.84rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--sc-gold);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 0.9fr 1.4fr 0.9fr 0.9fr 0.9fr auto;
+      gap: 8px;
+    }
+    @media (max-width: 820px) {
+      .form-row { grid-template-columns: 1fr 1fr; }
+      .form-row .span-2 { grid-column: span 2; }
+    }
+    .m3-input, .m3-select {
+      height: 38px;
+      background: var(--surface-2);
+      border: 1px solid var(--outline);
+      border-radius: 8px;
+      color: var(--on-surface);
+      padding: 0 10px;
+      font-size: 0.84rem;
+      font-family: var(--font-sans);
+      width: 100%;
+      min-width: 0;
+    }
+    .m3-input:focus, .m3-select:focus {
+      outline: none;
+      border-color: var(--sc-gold);
+      background: var(--surface-3);
+    }
+
+    /* Search & Day Filter Toolbar */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .chip-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .filter-chip {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 8px;
+      background: var(--surface-1);
+      color: var(--on-surface-variant);
+      border: 1px solid var(--outline-variant);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      background: var(--sc-gold);
+      color: #060D1E;
+      border-color: var(--sc-gold);
+      font-weight: 800;
+    }
+    .search-box {
+      width: 240px;
+      max-width: 100%;
+    }
+    @media (max-width: 640px) {
+      .search-box { width: 100%; }
+    }
+
+    /* Route Summary Banner */
+    .route-status-bar {
+      background: var(--surface-2);
+      border: 1px solid var(--outline-variant);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.82rem;
+    }
+
+    /* Enterprise Data Table (Desktop) + Structured Cards (Mobile) */
+    .table-wrapper {
+      background: var(--surface-1);
+      border: 1px solid var(--outline-variant);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-1);
+    }
+    table.enterprise-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .enterprise-table thead {
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--outline);
+    }
+    .enterprise-table th {
+      padding: 11px 12px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface-variant);
+    }
+    .enterprise-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--outline-variant);
+      font-size: 0.85rem;
+      vertical-align: middle;
+    }
+    .enterprise-table tr:last-child td { border-bottom: none; }
+    .enterprise-table tr.row-done {
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .enterprise-table tr.row-done.row-fido {
+      background: rgba(192, 132, 252, 0.10);
+    }
+
+    /* Mobile Card List (shown cleanly on narrow screens) */
+    .mobile-cards {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @media (max-width: 780px) {
+      .table-wrapper { display: none; }
+      .mobile-cards { display: flex; }
+    }
+
+    .m-card {
+      background: var(--surface-1);
+      border: 1px solid var(--outline-variant);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow-1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .m-card.row-done {
+      border-color: rgba(16, 185, 129, 0.55);
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.09) 0%, var(--surface-1) 100%);
+    }
+    .m-card.row-done.row-fido {
+      border-color: rgba(192, 132, 252, 0.65);
+      background: linear-gradient(180deg, rgba(192, 132, 252, 0.12) 0%, var(--surface-1) 100%);
+    }
+    .m-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .m-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface-2);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+    .m-card-actions {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Badges & Controls */
+    .tier-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .tier-A { background: var(--sc-gold-container); color: var(--sc-gold); border: 1px solid rgba(245, 184, 0, 0.45); }
+    .tier-B { background: var(--sc-red-container); color: var(--sc-on-red-container); border: 1px solid rgba(217, 30, 42, 0.45); }
+    .tier-C { background: var(--surface-3); color: var(--on-surface-variant); border: 1px solid var(--outline); }
+    .tier-EX { background: var(--emerald-container); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.45); }
+
+    .amt-input {
+      width: 105px;
+      height: 34px;
+      background: var(--surface-2);
+      border: 1px solid var(--outline);
+      border-radius: 7px;
+      color: var(--on-surface);
+      padding: 0 8px;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-align: right;
+    }
+    @media (max-width: 780px) {
+      .amt-input { width: 100%; height: 38px; text-align: left; }
+    }
+    .amt-input:focus { outline: none; border-color: var(--sc-gold); }
+
+    .mode-btn {
+      height: 34px;
+      padding: 0 10px;
+      border-radius: 7px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      background: var(--surface-2);
+      color: var(--on-surface-variant);
+      border: 1px solid var(--outline);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    @media (max-width: 780px) { .mode-btn { height: 38px; } }
+    .mode-btn.fido {
+      background: var(--violet-container);
+      color: #E9D5FF;
+      border-color: rgba(192, 132, 252, 0.65);
+    }
+
+    .check-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      background: var(--surface-2);
+      border: 1px solid var(--outline);
+      color: var(--on-surface-variant);
+      font-size: 0.95rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (max-width: 780px) { .check-btn { width: 38px; height: 38px; } }
+    .row-done .check-btn {
+      background: var(--emerald);
+      color: #04130D;
+      border-color: var(--emerald);
+    }
+    .row-done.row-fido .check-btn {
+      background: var(--violet);
+      color: #060D1E;
+      border-color: var(--violet);
+    }
+
+    /* Tessera 2: Enterprise Strategy Matrix */
+    .strategy-banner {
+      background: var(--surface-1);
+      border: 1px solid var(--outline-variant);
+      border-left: 4px solid var(--sc-red);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-1);
+    }
+    .strategy-banner h2 {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: var(--sc-gold);
+      margin-bottom: 6px;
+    }
+    .strategy-banner p {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      line-height: 1.5;
+    }
+
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 760px) {
+      .strategy-grid { grid-template-columns: 1fr; }
+    }
+    .strat-card {
+      background: var(--surface-1);
+      border: 1px solid var(--outline-variant);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow-1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .strat-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 6px;
+      width: fit-content;
+    }
+    .strat-card h3 {
+      font-size: 0.98rem;
+      font-weight: 800;
+      margin-top: 8px;
+      color: #FFFFFF;
+    }
+    .strat-card p {
+      font-size: 0.82rem;
+      color: var(--on-surface-variant);
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+    .strat-kpi-box {
+      background: var(--surface-2);
+      border: 1px solid var(--outline-variant);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--on-surface);
+    }
+    .strat-bullets {
+      padding-left: 18px;
+      font-size: 0.8rem;
+      color: var(--on-surface-variant);
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENTERPRISE APP BAR -->
+  <header class="app-bar">
+    <div class="app-bar-inner">
+      <div class="brand-cluster">
+        <svg class="sc-emblem" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Logo San Carlo">
+          <ellipse cx="60" cy="60" rx="56" ry="44" fill="#D91E2A" stroke="#F5B800" stroke-width="5"/>
+          <ellipse cx="60" cy="60" rx="46" ry="34" fill="#0B193D" stroke="#FFFFFF" stroke-width="2"/>
+          <text x="60" y="54" text-anchor="middle" fill="#FFFFFF" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="18" letter-spacing="0.5">SAN</text>
+          <text x="60" y="75" text-anchor="middle" fill="#F5B800" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="18" letter-spacing="0.5">CARLO</text>
+        </svg>
+        <div class="brand-titles">
+          <h1>San Carlo Sales Console <span class="env-chip">B2B Enterprise</span></h1>
+          <p>Base consolidata: <strong class="mono">8.871,00 €</strong> • Target chiusura: <strong class="mono">12.500,00 €</strong></p>
+        </div>
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="m3-btn m3-btn-tonal" onclick="exportCSV()">Esporta CSV</button>
+        <button class="m3-btn m3-btn-danger" onclick="resetAll()">Reset Giro</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+
+    <!-- TELEMETRY KPI STRIP -->
+    <section class="telemetry-grid">
+      <div class="telemetry-card tc-emerald">
+        <div class="tc-header"><span>Fatturato Mese</span><span>LIVE</span></div>
+        <div class="tc-value mono" style="color:var(--emerald)" id="kpiMonthNow">8.871,00 €</div>
+        <div class="tc-sub mono" id="kpiRouteAdded">Giro: +0,00 € (Dir: 0 € | Fido: 0 €)</div>
+      </div>
+
+      <div class="telemetry-card tc-gold">
+        <div class="tc-header"><span>Residuo Target</span><span>12.500 €</span></div>
+        <div class="tc-value mono" style="color:var(--sc-gold)" id="kpiRemGoal">3.629,00 €</div>
+        <div class="tc-sub" id="kpiRemSub">Su 64 clienti rimanenti</div>
+      </div>
+
+      <div class="telemetry-card tc-violet">
+        <div class="tc-header"><span>Plafond Fido</span><span>MAX 300 €</span></div>
+        <div class="tc-value mono" style="color:#E9D5FF" id="kpiFidoRem">300,00 €</div>
+        <div class="tc-sub mono" id="kpiFidoUsed">Usato: 0,00 € / 300,00 €</div>
+        <div class="linear-track"><div class="linear-fill" id="fidoFill" style="background:var(--violet); width:0%"></div></div>
+      </div>
+
+      <div class="telemetry-card tc-red">
+        <div class="tc-header"><span>Proiezione Mese</span><span>STIMA</span></div>
+        <div class="tc-value mono" id="kpiMonthEst">12.551,00 €</div>
+        <div class="tc-sub mono" id="kpiVar">Scostamento: 0,00 €</div>
+      </div>
+    </section>
+
+    <!-- MASTER PROGRESS -->
+    <section class="master-progress">
+      <div class="mp-top">
+        <span id="goalLabel">Avanzamento Obiettivo: 8.871,00 € / 12.500,00 €</span>
+        <span class="mono" id="progPct" style="color:var(--sc-gold)">71.0%</span>
+      </div>
+      <div class="mp-track"><div class="mp-fill" id="progFill" style="width:71%"></div></div>
+    </section>
+
+    <!-- TWO INDEPENDENT TABS (MATERIAL DESIGN 3 SEGMENTED BAR) -->
+    <nav class="m3-tabs" role="tablist">
+      <button class="m3-tab active" id="tab-dashboard" onclick="openTessera('dashboard')">
+        <span>Dashboard Clienti</span>
+        <span class="tab-badge" id="badgeCount">64</span>
+      </button>
+      <button class="m3-tab" id="tab-strategie" onclick="openTessera('strategie')">
+        <span>Strategie di Recupero</span>
+        <span class="tab-badge">4 Leve</span>
+      </button>
+    </nav>
+
+    <!-- TESSERA 1: DASHBOARD CLIENTI & FATTURATI -->
+    <section id="tessera-dashboard" class="view-panel active">
+
+      <div class="enterprise-card">
+        <div class="ec-title">
+          <span>+ Registra Visita Extra Giornaliera</span>
+          <span style="font-size:0.72rem; color:var(--on-surface-muted); font-weight:600;">Somma immediata su 8.871,00 €</span>
+        </div>
+        <div class="form-row">
+          <select class="m3-select" id="exDay">
+            <option value="Martedì">Martedì</option>
+            <option value="Mercoledì">Mercoledì</option>
+            <option value="Giovedì">Giovedì</option>
+            <option value="Venerdì">Venerdì</option>
+            <option value="Sabato">Sabato</option>
+          </select>
+          <input class="m3-input" type="text" id="exName" placeholder="Ragione sociale cliente..." />
+          <select class="m3-select" id="exTier">
+            <option value="A">Fascia A (100€)</option>
+            <option value="B" selected>Fascia B (50€)</option>
+            <option value="C">Fascia C (25€)</option>
+          </select>
+          <input class="m3-input mono" type="number" id="exAmt" placeholder="Importo €" step="0.01" min="0" />
+          <select class="m3-select" id="exPay">
+            <option value="cash">Diretto</option>
+            <option value="fido">Con Fido</option>
+          </select>
+          <button class="m3-btn m3-btn-emerald span-2" onclick="addExtra()">+ Aggiungi</button>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="chip-group" id="dayTabs"></div>
+        <input class="m3-input search-box" type="search" id="searchInput" placeholder="Cerca cliente..." oninput="onSearch(this.value)" />
+      </div>
+
+      <div class="route-status-bar" id="dayBanner"></div>
+
+      <!-- Desktop Enterprise Data Table -->
+      <div class="table-wrapper">
+        <table class="enterprise-table">
+          <thead>
+            <tr>
+              <th>Giorno</th>
+              <th>Cliente</th>
+              <th>Fascia</th>
+              <th>Min / Piano</th>
+              <th>Fatturato Previsto / Reale</th>
+              <th>Importo (€)</th>
+              <th>Pagamento</th>
+              <th style="text-align:center;">Stato</th>
+            </tr>
+          </thead>
+          <tbody id="desktopTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Structured Cards -->
+      <div class="mobile-cards" id="mobileCardsList"></div>
+
+    </section>
+
+    <!-- TESSERA 2: STRATEGIE DI RECUPERO -->
+    <section id="tessera-strategie" class="view-panel">
+      <div class="strategy-banner">
+        <h2>Motore Predittivo di Recupero Differenze — San Carlo</h2>
+        <p id="stratIntro">Partenza consolidata: <strong>8.871,00 €</strong> su obiettivo mensile di <strong>12.500,00 €</strong> (gap residuo: <strong>3.629,00 €</strong>). I parametri operativi sottostanti si ricalcolano automaticamente in base agli incassi e al fido impiegato.</p>
+      </div>
+
+      <div class="strategy-grid" id="stratCards"></div>
+    </section>
+
+  </main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    const BASE_CLIENTS = [{"id": 1, "day": "Martedì", "tier": "A", "name": "Anemola", "min": 100, "target": 125}, {"id": 2, "day": "Martedì", "tier": "A", "name": "Melon", "min": 100, "target": 125}, {"id": 3, "day": "Martedì", "tier": "A", "name": "Gml", "min": 100, "target": 125}, {"id": 4, "day": "Martedì", "tier": "B", "name": "Calenda", "min": 50, "target": 70}, {"id": 5, "day": "Martedì", "tier": "B", "name": "Insomnia", "min": 50, "target": 70}, {"id": 6, "day": "Martedì", "tier": "B", "name": "Mastroianni", "min": 50, "target": 70}, {"id": 7, "day": "Martedì", "tier": "B", "name": "Insolito", "min": 50, "target": 70}, {"id": 8, "day": "Martedì", "tier": "B", "name": "Asd soccer", "min": 50, "target": 70}, {"id": 9, "day": "Martedì", "tier": "B", "name": "Sartal", "min": 50, "target": 70}, {"id": 10, "day": "Martedì", "tier": "B", "name": "Nice bar", "min": 50, "target": 70}, {"id": 11, "day": "Martedì", "tier": "B", "name": "Officina dei sapori", "min": 50, "target": 70}, {"id": 12, "day": "Martedì", "tier": "C", "name": "Mario russo", "min": 25, "target": 30}, {"id": 13, "day": "Martedì", "tier": "C", "name": "Arena di helas", "min": 25, "target": 30}, {"id": 14, "day": "Martedì", "tier": "C", "name": "Aurora", "min": 25, "target": 30}, {"id": 15, "day": "Martedì", "tier": "C", "name": "La nuova Caffetteria", "min": 25, "target": 30}, {"id": 16, "day": "Martedì", "tier": "C", "name": "De cristofaro", "min": 25, "target": 30}, {"id": 17, "day": "Mercoledì", "tier": "A", "name": "Tartaglione", "min": 100, "target": 125}, {"id": 18, "day": "Mercoledì", "tier": "A", "name": "Scialla", "min": 100, "target": 125}, {"id": 19, "day": "Mercoledì", "tier": "B", "name": "Circolo Dopo lavoro", "min": 50, "target": 70}, {"id": 20, "day": "Mercoledì", "tier": "B", "name": "Musone", "min": 50, "target": 70}, {"id": 21, "day": "Mercoledì", "tier": "B", "name": "Punto di ristoro", "min": 50, "target": 70}, {"id": 22, "day": "Mercoledì", "tier": "C", "name": "Perla del grano", "min": 25, "target": 30}, {"id": 23, "day": "Mercoledì", "tier": "C", "name": "Cieci", "min": 25, "target": 30}, {"id": 24, "day": "Mercoledì", "tier": "C", "name": "Antica caffetteria", "min": 25, "target": 30}, {"id": 25, "day": "Mercoledì", "tier": "C", "name": "Fermento", "min": 25, "target": 30}, {"id": 26, "day": "Mercoledì", "tier": "C", "name": "Elleffe", "min": 25, "target": 30}, {"id": 27, "day": "Mercoledì", "tier": "C", "name": "Coffe talk", "min": 25, "target": 30}, {"id": 28, "day": "Mercoledì", "tier": "C", "name": "Moretta", "min": 25, "target": 30}, {"id": 29, "day": "Mercoledì", "tier": "C", "name": "Bar k", "min": 25, "target": 30}, {"id": 30, "day": "Mercoledì", "tier": "C", "name": "Pizzicagnolo", "min": 25, "target": 30}, {"id": 31, "day": "Mercoledì", "tier": "C", "name": "Caffè primavera", "min": 25, "target": 30}, {"id": 32, "day": "Giovedì", "tier": "A", "name": "Di Giovanni frutteria", "min": 100, "target": 125}, {"id": 33, "day": "Giovedì", "tier": "B", "name": "Kore", "min": 50, "target": 70}, {"id": 34, "day": "Giovedì", "tier": "B", "name": "Di fuccia", "min": 50, "target": 70}, {"id": 35, "day": "Giovedì", "tier": "B", "name": "Erreggi", "min": 50, "target": 70}, {"id": 36, "day": "Giovedì", "tier": "B", "name": "Smoke shop", "min": 50, "target": 70}, {"id": 37, "day": "Giovedì", "tier": "C", "name": "Vistoso", "min": 25, "target": 30}, {"id": 38, "day": "Giovedì", "tier": "C", "name": "Agenziano Maria", "min": 25, "target": 30}, {"id": 39, "day": "Giovedì", "tier": "C", "name": "Oasi", "min": 25, "target": 30}, {"id": 40, "day": "Giovedì", "tier": "C", "name": "Primo caffe", "min": 25, "target": 30}, {"id": 41, "day": "Giovedì", "tier": "C", "name": "Garofalo", "min": 25, "target": 30}, {"id": 42, "day": "Venerdì", "tier": "A", "name": "Drink and more", "min": 100, "target": 125}, {"id": 43, "day": "Venerdì", "tier": "B", "name": "Marzia caffe", "min": 50, "target": 70}, {"id": 44, "day": "Venerdì", "tier": "B", "name": "La luna", "min": 50, "target": 70}, {"id": 45, "day": "Venerdì", "tier": "B", "name": "Munno nicola", "min": 50, "target": 70}, {"id": 46, "day": "Venerdì", "tier": "B", "name": "Old market", "min": 50, "target": 70}, {"id": 47, "day": "Venerdì", "tier": "B", "name": "Ambrosino", "min": 50, "target": 70}, {"id": 48, "day": "Venerdì", "tier": "B", "name": "Bar brule", "min": 50, "target": 70}, {"id": 49, "day": "Venerdì", "tier": "B", "name": "Coffe break", "min": 50, "target": 70}, {"id": 50, "day": "Venerdì", "tier": "B", "name": "Flii d amico", "min": 50, "target": 70}, {"id": 51, "day": "Venerdì", "tier": "C", "name": "Athena", "min": 25, "target": 30}, {"id": 52, "day": "Venerdì", "tier": "C", "name": "Fisio", "min": 25, "target": 30}, {"id": 53, "day": "Venerdì", "tier": "C", "name": "Le Bon", "min": 25, "target": 30}, {"id": 54, "day": "Venerdì", "tier": "C", "name": "Segreti e bugie", "min": 25, "target": 30}, {"id": 55, "day": "Venerdì", "tier": "C", "name": "Bar la rotonda", "min": 25, "target": 30}, {"id": 56, "day": "Venerdì", "tier": "C", "name": "La rinascita", "min": 25, "target": 30}, {"id": 57, "day": "Venerdì", "tier": "C", "name": "Marzano", "min": 25, "target": 30}, {"id": 58, "day": "Venerdì", "tier": "C", "name": "Borrozzino", "min": 25, "target": 30}, {"id": 59, "day": "Venerdì", "tier": "C", "name": "Tab di santo", "min": 25, "target": 30}, {"id": 60, "day": "Sabato", "tier": "A", "name": "Pimo", "min": 100, "target": 125}, {"id": 61, "day": "Sabato", "tier": "B", "name": "Maudit", "min": 50, "target": 70}, {"id": 62, "day": "Sabato", "tier": "B", "name": "Bar colors", "min": 50, "target": 70}, {"id": 63, "day": "Sabato", "tier": "C", "name": "Mogago", "min": 25, "target": 30}, {"id": 64, "day": "Sabato", "tier": "C", "name": "Fantasia dei dolci", "min": 25, "target": 30}];
+    const STORAGE_KEY = "san_carlo_enterprise_v6";
+    const ALREADY_BILLED = 8871;
+    const MONTHLY_GOAL = 12500;
+    const FIDO_LIMIT = 300;
+    const DAYS = ["Tutti", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+
+    let state = {
+      activeTessera: "dashboard",
+      activeDay: "Tutti",
+      searchQuery: "",
+      records: {},
+      extras: []
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          state = { ...state, ...JSON.parse(saved), searchQuery: "" };
+        }
+      } catch (e) {}
+    }
+
+    function saveState() {
+      try {
+        const toSave = {
+          activeTessera: state.activeTessera,
+          activeDay: state.activeDay,
+          records: state.records,
+          extras: state.extras
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      } catch (e) {}
+    }
+
+    function fmt(num) {
+      return num.toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+    }
+
+    function openTessera(name) {
+      state.activeTessera = name;
+      saveState();
+      render();
+    }
+
+    function onSearch(val) {
+      state.searchQuery = val.trim().toLowerCase();
+      render();
+    }
+
+    function getAllItems() {
+      const base = BASE_CLIENTS.map(c => {
+        const rec = state.records[c.id] || { done: false, actual: "", payMode: "cash" };
+        return {
+          ...c,
+          isExtra: false,
+          done: !!rec.done,
+          actual: rec.actual,
+          payMode: rec.payMode || "cash"
+        };
+      });
+      const ext = state.extras.map(e => ({
+        ...e,
+        isExtra: true,
+        done: true,
+        actual: parseFloat(e.actual) || 0,
+        payMode: e.payMode || "cash"
+      }));
+      return [...base, ...ext];
+    }
+
+    function computeModel() {
+      const items = getAllItems();
+      let routeDoneSum = 0;
+      let cashSum = 0;
+      let fidoSum = 0;
+      let doneCount = 0;
+      let unvisitedWeight = 0;
+      let unvisitedCount = 0;
+
+      items.forEach(item => {
+        if (item.done) {
+          const val = parseFloat(item.actual);
+          const eff = isNaN(val) ? item.target : val;
+          routeDoneSum += eff;
+          if (item.payMode === "fido") fidoSum += eff;
+          else cashSum += eff;
+          doneCount++;
+        } else {
+          unvisitedWeight += item.target;
+          unvisitedCount++;
+        }
+      });
+
+      const currentMonthTotal = ALREADY_BILLED + routeDoneSum;
+      const remainingToMonthlyGoal = Math.max(0, MONTHLY_GOAL - currentMonthTotal);
+      const multiplier = unvisitedWeight > 0 ? (remainingToMonthlyGoal / unvisitedWeight) : 0;
+
+      items.forEach(item => {
+        if (item.done) {
+          const val = parseFloat(item.actual);
+          item.effective = isNaN(val) ? item.target : val;
+          item.dynamicTarget = item.effective;
+        } else {
+          item.dynamicTarget = Math.round(item.target * multiplier * 100) / 100;
+          item.effective = item.dynamicTarget;
+        }
+      });
+
+      const baseDonePlanned = items.filter(i => i.done && !i.isExtra).reduce((s, i) => s + i.target, 0);
+      const variance = routeDoneSum - baseDonePlanned;
+      const fidoRemaining = Math.max(0, FIDO_LIMIT - fidoSum);
+      const fidoOver = Math.max(0, fidoSum - FIDO_LIMIT);
+      const estimatedMonthEnd = currentMonthTotal + (unvisitedCount > 0 ? remainingToMonthlyGoal : 0);
+
+      return {
+        items,
+        routeDoneSum,
+        currentMonthTotal,
+        cashSum,
+        fidoSum,
+        fidoRemaining,
+        fidoOver,
+        doneCount,
+        totalCount: items.length,
+        remainingToMonthlyGoal,
+        unvisitedCount,
+        variance,
+        estimatedMonthEnd
+      };
+    }
+
+    function renderStrategies(plan) {
+      const unvisited = plan.items.filter(i => !i.done);
+      const unvisitedA = unvisited.filter(i => i.tier === "A");
+      const unvisitedB = unvisited.filter(i => i.tier === "B");
+      const unvisitedC = unvisited.filter(i => i.tier === "C");
+
+      const gapToRecover = Math.max(0, -plan.variance);
+      const remGoal = plan.remainingToMonthlyGoal;
+
+      document.getElementById("stratIntro").innerHTML =
+        `Fatturato attuale consolidato: <strong class="mono">${fmt(plan.currentMonthTotal)}</strong> su <strong class="mono">12.500,00 €</strong> ` +
+        `(residuo da coprire: <strong class="mono">${fmt(remGoal)}</strong> su <strong>${plan.unvisitedCount} clienti rimanenti</strong>). ` +
+        (gapToRecover > 0
+          ? `Scostamento negativo rispetto al piano: <strong class="mono" style="color:var(--sc-on-red-container)">${fmt(gapToRecover)}</strong>. Attiva una o più leve operative sottostanti:`
+          : `Andamento in linea o superiore al piano (<strong class="mono" style="color:var(--emerald)">+${fmt(Math.max(0, plan.variance))}</strong>). Usa queste leve per consolidare la chiusura a 12.500,00 €.`);
+
+      const fidoAvail = plan.fidoRemaining;
+      const fidoClientsCount = Math.min(unvisitedA.length + unvisitedB.length, Math.floor(fidoAvail / 50));
+      const fidoExamples = [...unvisitedA, ...unvisitedB].slice(0, 4).map(c => `${c.name} (${c.day})`).join(", ") || "Nessun cliente A/B rimanente";
+
+      const upsellA = unvisitedA.length > 0 ? Math.ceil((gapToRecover > 0 ? gapToRecover : 160) / unvisitedA.length) : 0;
+      const listA = unvisitedA.slice(0, 5).map(c => `${c.name} (${c.day})`).join(", ") || "Tutti i clienti A visitati";
+
+      const bNeeded = gapToRecover > 0 ? Math.ceil(gapToRecover / 15) : Math.min(6, unvisitedB.length);
+      const listB = unvisitedB.slice(0, 5).map(c => `${c.name} (${c.day})`).join(", ") || "Tutti i clienti B visitati";
+
+      const extraNeeded50 = Math.ceil((gapToRecover > 0 ? gapToRecover : 150) / 50);
+
+      const cards = [
+        {
+          badge: "LEVA 01 • PLAFOND FIDO 300 €",
+          badgeStyle: "background:var(--violet-container); color:#E9D5FF; border:1px solid rgba(192,132,252,0.45);",
+          title: fidoAvail > 0 ? `Attiva fino a ${fmt(fidoAvail)} di ordini a fido` : "Plafond fido da 300 € esaurito",
+          desc: fidoAvail > 0
+            ? `Hai ancora ${fmt(fidoAvail)} di fido disponibile che entra immediatamente nel fatturato utile per raggiungere 12.500,00 € su clienti affidabili con temporanea tensione di cassa.`
+            : `Hai già impiegato ${fmt(plan.fidoSum)} di fido. Prosegui con incassi diretti o visite extra.`,
+          metric: fidoAvail > 0
+            ? `Potenziale: fino a ${fidoClientsCount} ordini da 50 € = ${fmt(Math.min(fidoAvail, fidoClientsCount * 50))}`
+            : `Fido utilizzato: ${fmt(plan.fidoSum)} / 300,00 €`,
+          bullets: [
+            `Clienti target fido: ${fidoExamples}`,
+            `Nella Dashboard Clienti imposta il selettore su "FIDO" per contabilizzare nel plafond`
+          ]
+        },
+        {
+          badge: "LEVA 02 • SPINTA FASCIA A",
+          badgeStyle: "background:var(--sc-gold-container); color:var(--sc-gold); border:1px solid rgba(245,184,0,0.45);",
+          title: unvisitedA.length > 0 ? `+${upsellA} € per ordine sui ${unvisitedA.length} clienti A rimasti` : "Fascia A completata",
+          desc: `Incrementa i cartoni ad alta rotazione San Carlo (Classica, Rustica, 1936, Vivace) sui clienti top per assorbire rapidamente lo scostamento.`,
+          metric: unvisitedA.length > 0
+            ? `Impatto: ${unvisitedA.length} clienti × +${upsellA} € = +${fmt(unvisitedA.length * upsellA)}`
+            : `Tutti gli 8 clienti A sono stati chiusi`,
+          bullets: [
+            `Prossimi clienti A: ${listA}`,
+            `Ticket medio Fascia A da 125,00 € a ${(125 + upsellA).toFixed(2)} €`
+          ]
+        },
+        {
+          badge: "LEVA 03 • UPSELL FASCIA B (+15 €)",
+          badgeStyle: "background:var(--sc-red-container); color:var(--sc-on-red-container); border:1px solid rgba(217,30,42,0.45);",
+          title: `Aggiungi +15 € su ${bNeeded} clienti B`,
+          desc: `Inserisci un espositore da banco o una referenza extra da 15 € sui clienti B per compensare eventuali ordini sotto soglia della Fascia C.`,
+          metric: `Impatto: ${bNeeded} ordini × +15,00 € = +${fmt(bNeeded * 15)}`,
+          bullets: [
+            `Clienti B in programma: ${listB}`,
+            `Passaggio da 70,00 € a 85,00 € per singola consegna`
+          ]
+        },
+        {
+          badge: "LEVA 04 • VISITE EXTRA & FASCIA C",
+          badgeStyle: "background:var(--emerald-container); color:var(--emerald); border:1px solid rgba(16,185,129,0.45);",
+          title: `Inserisci ${extraNeeded50} visite extra da 50 € (o +10 € su Fascia C)`,
+          desc: `Registra nuove consegne fuori giro tramite il pannello "Registra Visita Extra Giornaliera" nella Dashboard Clienti per superare i 12.500,00 €.`,
+          metric: `Impatto: ${extraNeeded50} visite extra × 50,00 € = +${fmt(extraNeeded50 * 50)}`,
+          bullets: [
+            `Finestre ottimali di inserimento: Giovedì e Sabato`,
+            `Alternativa: +10,00 € su ${Math.min(unvisitedC.length, 10)} clienti C (+100,00 €)`
+          ]
+        }
+      ];
+
+      const container = document.getElementById("stratCards");
+      container.innerHTML = "";
+      cards.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "strat-card";
+        div.innerHTML = `
+          <div>
+            <span class="strat-tag" style="${c.badgeStyle}">${c.badge}</span>
+            <h3>${c.title}</h3>
+            <p>${c.desc}</p>
+          </div>
+          <div class="strat-kpi-box mono">${c.metric}</div>
+          <ul class="strat-bullets">
+            ${c.bullets.map(b => `<li>${b}</li>`).join("")}
+          </ul>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function render() {
+      const plan = computeModel();
+
+      document.getElementById("kpiMonthNow").textContent = fmt(plan.currentMonthTotal);
+      document.getElementById("kpiRouteAdded").textContent = `Giro: +${plan.routeDoneSum.toFixed(0)} € (Dir: ${plan.cashSum.toFixed(0)} € | Fido: ${plan.fidoSum.toFixed(0)} €)`;
+      document.getElementById("kpiRemGoal").textContent = fmt(plan.remainingToMonthlyGoal);
+      document.getElementById("kpiRemSub").textContent = plan.unvisitedCount > 0
+        ? `Su ${plan.unvisitedCount} clienti rimanenti`
+        : "Giro completato";
+
+      document.getElementById("kpiFidoRem").textContent = fmt(plan.fidoRemaining);
+      document.getElementById("kpiFidoUsed").textContent = plan.fidoOver > 0
+        ? `Sforato di +${fmt(plan.fidoOver)}!`
+        : `Usato: ${fmt(plan.fidoSum)} / 300,00 €`;
+      document.getElementById("fidoFill").style.width = Math.min(100, (plan.fidoSum / FIDO_LIMIT) * 100) + "%";
+
+      document.getElementById("kpiMonthEst").textContent = fmt(plan.estimatedMonthEnd);
+      const varEl = document.getElementById("kpiVar");
+      varEl.textContent = `Scostamento: ${plan.variance >= 0 ? "+" : ""}${fmt(plan.variance)}`;
+      varEl.style.color = plan.variance >= 0 ? "var(--emerald)" : "var(--sc-on-red-container)";
+
+      const pct = Math.min(100, (plan.currentMonthTotal / MONTHLY_GOAL) * 100);
+      document.getElementById("goalLabel").textContent = `Avanzamento Obiettivo: ${fmt(plan.currentMonthTotal)} / 12.500,00 €`;
+      document.getElementById("progPct").textContent = pct.toFixed(1) + "%";
+      document.getElementById("progFill").style.width = pct + "%";
+      document.getElementById("badgeCount").textContent = `${plan.doneCount}/${plan.totalCount}`;
+
+      const isDash = state.activeTessera === "dashboard";
+      document.getElementById("tessera-dashboard").classList.toggle("active", isDash);
+      document.getElementById("tessera-strategie").classList.toggle("active", !isDash);
+      document.getElementById("tab-dashboard").classList.toggle("active", isDash);
+      document.getElementById("tab-strategie").classList.toggle("active", !isDash);
+
+      const tabsEl = document.getElementById("dayTabs");
+      tabsEl.innerHTML = "";
+      DAYS.forEach(d => {
+        const btn = document.createElement("button");
+        btn.className = "filter-chip" + (state.activeDay === d ? " active" : "");
+        btn.textContent = d;
+        btn.onclick = () => { state.activeDay = d; render(); };
+        tabsEl.appendChild(btn);
+      });
+
+      let filtered = state.activeDay === "Tutti"
+        ? plan.items
+        : plan.items.filter(i => i.day === state.activeDay);
+
+      if (state.searchQuery) {
+        filtered = filtered.filter(i => i.name.toLowerCase().includes(state.searchQuery));
+      }
+
+      const dayDone = filtered.filter(i => i.done).reduce((s, i) => s + i.effective, 0);
+      const dayRem = filtered.filter(i => !i.done).reduce((s, i) => s + i.dynamicTarget, 0);
+
+      document.getElementById("dayBanner").innerHTML = `
+        <div><strong>${state.activeDay === "Tutti" ? "Giro Settimanale Completo" : state.activeDay}</strong> • ${filtered.length} posizioni</div>
+        <div class="mono">Incassato: <strong style="color:var(--emerald)">${fmt(dayDone)}</strong> | Residuo: <strong style="color:var(--sc-gold)">${fmt(dayRem)}</strong></div>
+      `;
+
+      const tbody = document.getElementById("desktopTableBody");
+      const mobileList = document.getElementById("mobileCardsList");
+      tbody.innerHTML = "";
+      mobileList.innerHTML = "";
+
+      filtered.forEach(item => {
+        const isFido = item.payMode === "fido";
+        const rowClass = (item.done ? "row-done " : "") + (isFido ? "row-fido" : "");
+        const tierClass = item.isExtra ? "tier-pill tier-EX" : `tier-pill tier-${item.tier}`;
+        const tierLabel = item.isExtra ? "EXTRA" : `Fascia ${item.tier}`;
+
+        const diff = item.dynamicTarget - item.target;
+        const diffStr = !item.done
+          ? (diff > 0.01 ? ` (+${diff.toFixed(2)} €)` : (diff < -0.01 ? ` (${diff.toFixed(2)} €)` : ""))
+          : "";
+        const targetColor = item.done || diff <= 0 ? "var(--emerald)" : "var(--sc-gold)";
+
+        // 1. Desktop Table Row
+        const tr = document.createElement("tr");
+        tr.className = rowClass;
+        tr.innerHTML = `
+          <td style="color:var(--on-surface-variant); font-weight:600;">${item.day}</td>
+          <td style="font-weight:800; color:#FFFFFF;">
+            ${item.name}
+            ${item.isExtra ? `<button class="m3-btn m3-btn-danger" style="height:22px; padding:0 6px; font-size:0.68rem; margin-left:6px;" onclick="removeExtra(${item.id})">✕</button>` : ""}
+          </td>
+          <td><span class="${tierClass}">${tierLabel}</span></td>
+          <td class="mono" style="color:var(--on-surface-muted); font-size:0.78rem;">${item.min} € / ${item.target} €</td>
+          <td class="mono" style="font-weight:800; color:${targetColor};">
+            ${item.done ? fmt(item.effective) : fmt(item.dynamicTarget) + diffStr}
+          </td>
+          <td>
+            <input class="amt-input" type="number" step="0.01" min="0"
+              placeholder="${item.dynamicTarget.toFixed(2)}"
+              value="${item.done ? item.effective : ''}"
+              onchange="updateAmount(${item.id}, ${item.isExtra}, this.value)" />
+          </td>
+          <td>
+            <button class="mode-btn ${isFido ? 'fido' : ''}"
+              onclick="togglePayMode(${item.id}, ${item.isExtra}, ${item.dynamicTarget})">
+              ${isFido ? "FIDO" : "DIRETTO"}
+            </button>
+          </td>
+          <td style="text-align:center;">
+            ${!item.isExtra
+              ? `<button class="check-btn" title="Conferma consegna" onclick="toggleDone(${item.id}, ${item.dynamicTarget})">✓</button>`
+              : `<span style="font-size:0.75rem; color:var(--emerald); font-weight:800;">OK</span>`
+            }
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        // 2. Mobile Card
+        const card = document.createElement("div");
+        card.className = "m-card " + rowClass;
+        card.innerHTML = `
+          <div class="m-card-head">
+            <div>
+              <div style="font-weight:800; font-size:0.96rem; color:#FFFFFF;">${item.name}</div>
+              <div style="font-size:0.75rem; color:var(--on-surface-variant); margin-top:2px;">
+                ${item.day} • Min <span class="mono">${item.min} €</span> • Piano <span class="mono">${item.target} €</span>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="${tierClass}">${tierLabel}</span>
+              ${item.isExtra ? `<button class="m3-btn m3-btn-danger" style="height:26px; padding:0 8px;" onclick="removeExtra(${item.id})">✕</button>` : ""}
+            </div>
+          </div>
+
+          <div class="m-card-meta">
+            <span style="color:var(--on-surface-variant);">${item.done ? "Fatturato registrato:" : "Fatturato previsto:"}</span>
+            <span class="mono" style="font-weight:800; color:${targetColor};">
+              ${item.done ? fmt(item.effective) : fmt(item.dynamicTarget) + diffStr}
+            </span>
+          </div>
+
+          <div class="m-card-actions">
+            <input class="amt-input" type="number" step="0.01" min="0"
+              placeholder="${item.dynamicTarget.toFixed(2)}"
+              value="${item.done ? item.effective : ''}"
+              onchange="updateAmount(${item.id}, ${item.isExtra}, this.value)" />
+            <button class="mode-btn ${isFido ? 'fido' : ''}"
+              onclick="togglePayMode(${item.id}, ${item.isExtra}, ${item.dynamicTarget})">
+              ${isFido ? "FIDO" : "DIRETTO"}
+            </button>
+            ${!item.isExtra
+              ? `<button class="check-btn" title="Conferma consegna" onclick="toggleDone(${item.id}, ${item.dynamicTarget})">✓</button>`
+              : `<span style="font-size:0.78rem; color:var(--emerald); font-weight:800; padding:0 6px;">OK</span>`
+            }
+          </div>
+        `;
+        mobileList.appendChild(card);
+      });
+
+      renderStrategies(plan);
+    }
+
+    function updateAmount(id, isExtra, val) {
+      const num = parseFloat(val);
+      if (isExtra) {
+        const ex = state.extras.find(e => e.id === id);
+        if (ex) ex.actual = isNaN(num) ? 0 : num;
+      } else {
+        const prev = state.records[id] || { payMode: "cash" };
+        if (val === "" || isNaN(num)) {
+          delete state.records[id];
+        } else {
+          state.records[id] = { done: true, actual: num, payMode: prev.payMode || "cash" };
+        }
+      }
+      saveState();
+      render();
+    }
+
+    function togglePayMode(id, isExtra, suggested) {
+      if (isExtra) {
+        const ex = state.extras.find(e => e.id === id);
+        if (ex) ex.payMode = ex.payMode === "fido" ? "cash" : "fido";
+      } else {
+        const curr = state.records[id];
+        if (!curr) {
+          state.records[id] = { done: true, actual: suggested, payMode: "fido" };
+        } else {
+          curr.payMode = curr.payMode === "fido" ? "cash" : "fido";
+        }
+      }
+      saveState();
+      render();
+    }
+
+    function toggleDone(id, suggested) {
+      const curr = state.records[id];
+      if (curr && curr.done) {
+        delete state.records[id];
+      } else {
+        state.records[id] = {
+          done: true,
+          actual: suggested,
+          payMode: (curr && curr.payMode) ? curr.payMode : "cash"
+        };
+      }
+      saveState();
+      render();
+    }
+
+    function addExtra() {
+      const day = document.getElementById("exDay").value;
+      const name = document.getElementById("exName").value.trim() || "Cliente Extra";
+      const tier = document.getElementById("exTier").value;
+      const payMode = document.getElementById("exPay").value;
+      const minMap = { A: 100, B: 50, C: 25 };
+      const rawAmt = parseFloat(document.getElementById("exAmt").value);
+      const actual = isNaN(rawAmt) ? minMap[tier] : rawAmt;
+
+      state.extras.push({
+        id: Date.now(),
+        day,
+        tier,
+        name,
+        min: minMap[tier],
+        target: minMap[tier],
+        actual,
+        payMode
+      });
+
+      document.getElementById("exName").value = "";
+      document.getElementById("exAmt").value = "";
+      saveState();
+      render();
+    }
+
+    function removeExtra(id) {
+      state.extras = state.extras.filter(e => e.id !== id);
+      saveState();
+      render();
+    }
+
+    function resetAll() {
+      if (confirm("Vuoi azzerare gli incassi del giro, il fido utilizzato e le visite extra mantenendo la base consolidata di 8.871,00 €?")) {
+        state.records = {};
+        state.extras = [];
+        saveState();
+        render();
+      }
+    }
+
+    function exportCSV() {
+      const plan = computeModel();
+      let csv = "Giorno;Cliente;Fascia;Tipo;Modalita_Pagamento;Minimo;Target_Base;Fatturato_Previsto_o_Reale;Stato\n";
+      plan.items.forEach(i => {
+        const payLabel = i.done ? (i.payMode === "fido" ? "Fido" : "Diretto") : "Da definire";
+        csv += `${i.day};${i.name};${i.tier};${i.isExtra ? 'Extra' : 'Giro'};${payLabel};${i.min};${i.target};${i.effective.toFixed(2).replace('.', ',')};\${i.done ? 'Chiuso' : 'Da visitare'}\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "san_carlo_enterprise_8871_12500.csv";
+      a.click();
+    }
+
+    loadState();
+    render();
+  </script>
+</body>
+</html>

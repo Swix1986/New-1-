@@ -1,0 +1,33 @@
+{
+  "id": "./",
+  "name": "San Carlo Enterprise — Giro Novembre",
+  "short_name": "San Carlo Pro",
+  "description": "Piattaforma commerciale San Carlo Enterprise (Material Design 3 / Android): 64 clienti unici, partenza 8.871 € -> 12.500 €, fido 300 € e strategie di recupero.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#060D1E",
+  "theme_color": "#0B193D",
+  "lang": "it",
+  "dir": "ltr",
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
